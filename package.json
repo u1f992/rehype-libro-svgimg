@@ -1,4 +1,10 @@
 {
+  "//": {
+    "$.repository": [
+      "> To publish from GitHub, your package's `repository.url` field in `package.json` must exactly match your GitHub repository.",
+      "https://github.com/npm/documentation/blob/ca07396072c837a782ab745f5c7587dca555bbc2/content/packages-and-modules/securing-your-code/trusted-publishers.mdx?plain=1#L350"
+    ]
+  },
   "name": "rehype-libro-svgimg",
   "version": "0.0.0",
   "description": "",
