@@ -1,7 +1,7 @@
 {
   "name": "rehype-libro-svgimg",
   "version": "0.0.2",
-  "description": "",
+  "description": "vfm-mdbp-vscode@v0.3.6の「画像のトリミング」機能をRehypeプラグインとして移植したもの。",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,9 +16,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
     "test": "node --test \"tests/**/*.ts\""
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Koutaro Mukai",
+  "license": "MIT",
   "packageManager": "pnpm@11.8.0",
   "devEngines": {
     "packageManager": {
