@@ -33,7 +33,7 @@
 
 ### 7. 小数倍率（round3 の丸め確認）
 ![](sample.png?svgimg=33.3)
-<!-- newscale=0.333。scaleH=190.5×0.333=63.4365→round3=63.437。svg 84.582mm×63.437mm / viewBox 0 0 84.582 63.437 / image 254×190.5 / translate(0,0) scale(0.333) -->
+<!-- newscale=0.333。scaleH=190.5×0.333 は IEEE-754 で 63.43649…（厳密な 63.4365 ではない）→round3=63.436。svg 84.582mm×63.436mm / viewBox 0 0 84.582 63.436 / image 254×190.5 / translate(0,0) scale(0.333) -->
 
 ### 8. alt テキストあり（alt は出力で破棄される）
 ![スクリーンショット](sample.png?svgimg=40)
