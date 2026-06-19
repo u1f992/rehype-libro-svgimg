@@ -15,28 +15,38 @@ type SvgImgParams = {
 };
 
 /**
- * `path?svgimg=N[,w,h,tx,ty]` を解析する。svgimgクエリが無ければ null（変換対象外）。
- * scale が空（先頭カンマ ?svgimg=,... 等）なら原実装どおり parseFloat("")=NaN を返し、
- * 呼び出し側で寸法 NaN の壊れたSVGになる（原稿に該当はない）。
- * （?? "" は noUncheckedIndexedAccess 下の型の絞り込み。実行時 params[0] は常に文字列。）
+ * `path?svgimg=N[,w,h,tx,ty]` を解析する。`?svgimg=` を含まなければ null（変換対象外）。
+ * 原実装と同じく `?svgimg=` をリテラル一致で探し、それ以降をカンマ区切りで読む。
+ * 倍率は必須。空（先頭カンマ `?svgimg=,...` 等）や数値化できない値は不正としてエラーを投げる
+ * （原実装は NaN のまま壊れた SVG を出力していたが、移植版では早期に失敗させる）。
+ * 省略フィールド（空文字）は 0＝なりゆきとして許容する。
  */
 function parseSvgImg(src: hast.Properties[string]): SvgImgParams | null {
   if (typeof src !== "string") {
     return null;
   }
-  const queryAt = src.indexOf("?");
-  if (queryAt < 0) return null;
-  const svgimg = new URLSearchParams(src.slice(queryAt + 1)).get("svgimg");
-  if (!svgimg) return null;
-  const params = svgimg.split(",");
-  return {
-    path: src.slice(0, queryAt),
-    scale: parseFloat(params[0] ?? "") / 100,
-    width: params[1] ? parseFloat(params[1]) : 0,
-    height: params[2] ? parseFloat(params[2]) : 0,
-    x: params[3] ? parseFloat(params[3]) : 0,
-    y: params[4] ? parseFloat(params[4]) : 0,
+  const at = src.indexOf("?svgimg=");
+  if (at < 0) return null;
+  const [scaleField, widthField, heightField, xField, yField] = src
+    .slice(at + "?svgimg=".length)
+    .split(",");
+  // 倍率は必須。空・未指定をここで弾くことで scaleField を string に絞り込む。
+  // （?? "" のような型だけの回避ではなく、実際に不正入力を排除するガードにしている。）
+  if (!scaleField) {
+    throw new Error(`libroSvgImg: invalid svgimg parameter (empty scale): "${src}"`);
+  }
+  const parsed: SvgImgParams = {
+    path: src.slice(0, at),
+    scale: parseFloat(scaleField) / 100,
+    width: widthField ? parseFloat(widthField) : 0,
+    height: heightField ? parseFloat(heightField) : 0,
+    x: xField ? parseFloat(xField) : 0,
+    y: yField ? parseFloat(yField) : 0,
   };
+  if ([parsed.scale, parsed.width, parsed.height, parsed.x, parsed.y].some((v) => Number.isNaN(v))) {
+    throw new Error(`libroSvgImg: invalid svgimg parameter: "${src}"`);
+  }
+  return parsed;
 }
 
 const MM_PER_INCH = 25.4;
@@ -89,7 +99,7 @@ export const libroSvgImg: unified.Plugin<[LibroSvgImgOptions]> =
     //     - https://github.com/vivliostyle/vivliostyle-cli/blob/v11.0.2/src/config/resolve.ts#L1127
     //       - `sourcePath = upath.resolve(context, input.entry);` at https://github.com/vivliostyle/vivliostyle-cli/blob/v11.0.2/src/config/resolve.ts#L1059
     if (file.dirname == null) {
-      throw new Error("libroSvgImg: ");
+      throw new Error("libroSvgImg: file.dirname is null; cannot resolve image paths");
     }
     selectAll("img", tree as hast.Root)
       .flatMap((img) => {

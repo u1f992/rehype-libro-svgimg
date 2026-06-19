@@ -35,9 +35,9 @@
 ![](sample.png?svgimg=33.3)
 <!-- newscale=0.333。scaleH=190.5×0.333 は IEEE-754 で 63.43649…（厳密な 63.4365 ではない）→round3=63.436。svg 84.582mm×63.436mm / viewBox 0 0 84.582 63.436 / image 254×190.5 / translate(0,0) scale(0.333) -->
 
-### 8. alt テキストあり（alt は出力で破棄される）
+### 8. alt テキストあり（alt は figcaption 化されない）
 ![スクリーンショット](sample.png?svgimg=40)
-<!-- ケース1と同一の svg を出力。alt は移植版・原実装とも消える -->
+<!-- ケース1と同一の svg を出力。原実装は ![alt](...) 全体を svg に置換し、VFM の img→figure+figcaption 化を先回りで潰すため alt は出力に残らない（alt を個別に削除しているわけではない） -->
 
 ## 対照群（変換対象外＝`<img>` のまま残るはず）
 
@@ -47,4 +47,4 @@
 
 ### 10. 別クエリのみ（svgimg を含まない）
 ![](sample.png?foo=bar)
-<!-- 非変換。移植: URLSearchParams.get("svgimg")=null。原実装: indexOf("?svgimg=")=-1 -->
+<!-- 非変換。移植・原実装とも "?svgimg=" を含まない（indexOf=-1） -->

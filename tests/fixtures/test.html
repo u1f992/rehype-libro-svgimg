@@ -57,10 +57,10 @@
           </svg><!-- newscale=0.333。scaleH=190.5×0.333 は IEEE-754 で 63.43649…（厳密な 63.4365 ではない）→round3=63.436。svg 84.582mm×63.436mm / viewBox 0 0 84.582 63.436 / image 254×190.5 / translate(0,0) scale(0.333) -->
         </section>
         <section class="level3">
-          <h3 id="h3_7">8. alt テキストあり（alt は出力で破棄される）</h3>
+          <h3 id="h3_7">8. alt テキストあり（alt は figcaption 化されない）</h3>
           <svg width="101.6mm" height="76.2mm" viewBox="0 0 101.6 76.2">
             <image width="254" height="190.5" xlink:href="sample.png" transform="translate(0,0) scale(0.4)"></image>
-          </svg><!-- ケース1と同一の svg を出力。alt は移植版・原実装とも消える -->
+          </svg><!-- ケース1と同一の svg を出力。原実装は ![alt](...) 全体を svg に置換し、VFM の img→figure+figcaption 化を先回りで潰すため alt は出力に残らない（alt を個別に削除しているわけではない） -->
         </section>
       </section>
       <section class="level2">
@@ -75,7 +75,7 @@
           <h3 id="h3_9">10. 別クエリのみ（svgimg を含まない）</h3>
           <p>
             <img src="sample.png?foo=bar">
-          </p><!-- 非変換。移植: URLSearchParams.get("svgimg")=null。原実装: indexOf("?svgimg=")=-1 -->
+          </p><!-- 非変換。移植・原実装とも "?svgimg=" を含まない（indexOf=-1） -->
         </section>
       </section>
     </section>
